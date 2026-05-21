@@ -30,4 +30,54 @@ The entire sandbox is hosted locally inside an isolated virtual network, ensurin
 │ DNS: 127.0.0.1    │           Handshake)            │ DNS: 10.0.2.10    │
 └───────────────────┘                                 └───────────────────┘
 
+Virtual Machine Configuration Matrix
+Machine Name	Operating System	Network Mode	            IP Address	  Primary Role
+DC-02	Windows  Server 2022	      NAT Network (AD-Sandbox)	10.0.2.10/24	Primary Domain Controller & DNS Server
+PC-01	Windows  10 Enterprise	     AT Network (AD-Sandbox)	10.0.2.20/24	Corporate Workstation (Joined to hq.local)
+Lab Deployment Milestones
 
+Phase 1: Virtual Infrastructure & Sandbox Isolation
+Configured a custom NAT Network named AD-Sandbox in the VirtualBox hypervisor mapping the private IP subnet range 10.0.2.0/24.
+Consolidated scattered configuration files (.vbox, .vdi) out of external host media into an organized local directory structure.
+Assigned both network cards to the matching virtual network switch to ensure complete host-to-guest networking sandbox isolation.
+
+Phase 2: Domain Controller Static Mapping
+Hardcoded DC-02 with a static IPv4 address configuration to ensure reliable service delivery:
+IP Address: 10.0.2.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 10.0.2.1
+Assigned a loopback address (127.0.0.1) for the Preferred DNS Server so the Domain Controller points to its local host resolver database.
+
+Phase 3: Active Directory Domain Services Provisioning
+Installed the core Active Directory Domain Services (AD DS) directory system roles and administrative dependencies.
+Promoted DC-02 to a primary Domain Controller by initiating a brand-new forest structure under the FQDN: hq.local.
+Verified successful directory schema registration and domain database health inside the Active Directory Users and Computers administrative console.
+
+Phase 4: Identity & Access Management (IAM)
+Structured a logical corporate schema within Active Directory by creating a department-specific Organizational Unit (OU) for the IT department.
+Created a standard enterprise domain user account for employee John Doe (jdoe / John Doe) within the IT OU.
+Defined standard password requirements and administrative security parameters to manage the user profile context securely.
+
+Phase 5: Client Enrollment & Domain Authentication
+Configured the workstation client adapter setting (PC-01) to point to the server (DC-02 at 10.0.2.10) as its primary DNS resolver.
+Resolved VirtualBox APIPA interface loops (169.254.x.x) by performing hardware reset adapter toggles and mapping static workstation IPs (10.0.2.20).
+Executed active domain path validation via ICMP ping to ensure DNS successfully translated hq.local to the Domain Controller IP.
+Enrolled the client workstation to the domain using administrative credentials, rebooted the node, and successfully logged in using John Doe's credentials (jodoe@hq.local).
+
+Phase 6: System Hardening & Group Policy Enforcement (GPO)
+Implemented security-hardening baselines to restrict end-user capabilities on corporate assets:
+Generated a Group Policy Object named IT_Department_Restrictions inside the Group Policy Management Console.
+Linked the GPO directly to the IT Organizational Unit to target domain users selectively while preserving system administrator privileges.
+Configured the following security template restriction: User Configuration -> Policies -> Administrative Templates -> Control Panel -> Prohibit access to Control Panel and PC settings.
+Triggered immediate policy distribution on the workstation client by forcing GPO propagation from the command line:
+DOS
+gpupdate /force
+Evaluated enforcement by attempting to open the classic Control Panel under the jdoe profile, resulting in immediate administrative block errors.
+
+
+🧠 Core Technical Skills Proven
+Virtualization Architecture: Virtual host-only/NAT network switch design, virtual resource management.
+Network Infrastructure & Subnetting: Custom static IP mapping, gateway routing paths, DNS loopbacks.
+Directory Services Administration: Active Directory schema layout, Organization Units (OUs), IAM user provisioning.
+Security Governance via Group Policy (GPOs): Designing, linking, and enforcing Group Policy Objects to control local operating system registries.
+IT Troubleshooting & Diagnostics: Resolving IP address conflicts, mitigating DHCP/APIPA network card isolation loops, and tracing network paths using command line utilities (ipconfig, ping, gpupdate).
