@@ -105,12 +105,24 @@ DOS
 gpupdate /force
 Evaluated enforcement by attempting to open the classic Control Panel under the jdoe profile, resulting in immediate administrative block errors.
 * Triggered immediate policy distribution on the workstation client by forcing GPO propagation from the command line:
-
 ![Group Policy Template Restriction Schema Configuration](screenshot11.jpg)
-
 * Evaluated enforcement by attempting to open the Control Panel under the jdoe profile, resulting in immediate administrative block errors.
-
 ![Active Endpoint Security Policy Lockout Warning](screenshot12.jpg)
+
+### Phase 7: Tiered Access Controls & File Share Security
+
+Implemented data loss prevention and access security structures by grouping identities and enforcing strict directory boundaries:
+
+* Proportioned corporate access lines by creating two distinct Active Directory Security Groups inside the IT folder: `IT-Admins` and `IT-Staff`.
+* Enrolled domain user John Doe (`jdoe`) as an active member of the restricted `IT-Staff` group to manage credential inheritance.
+
+![Active Directory Security Group Membership Allocation](screenshot13.jpg)
+
+* Provisioned a secured network file server volume (`CompanyData`) inside the root server directory, masking its accessibility across the local virtual network range (`\\10.0.2.10\CompanyData`).
+* Hardcoded explicit Share and local NTFS Access Control Lists (ACLs) to strip write/modify capabilities away from standard tier accounts while preserving full administrative control.
+* Validated least-privilege enforcement by logging back into `PC-01` as John Doe, mapping the directory volume, and attempting file alterations—resulting in immediate system access denial block windows.
+
+![Active Endpoint Access Control List Permission Lockout](screenshot14.jpg)
 
 
 🧠 Core Technical Skills Proven
